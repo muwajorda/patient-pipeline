@@ -1,0 +1,17 @@
+[
+  {
+    "sample_id": "S-003",
+    "patient_id": "P-03",
+    "assay": "ATAC-seq",
+    "genome": "GRCh38",
+    "fastq_1": null,
+    "fastq_2": null,
+    "tissue": "tumor",
+    "collection_date": "2023-11-02",
+    "quality_score": 60,
+    "status": "needs_review",
+    "errors": [
+      "Missing required field: fastq_1"
+    ]
+  }
+]

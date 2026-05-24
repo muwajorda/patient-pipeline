@@ -1,0 +1,32 @@
+[
+  {
+    "sample_id": "S-001",
+    "patient_id": "P-01",
+    "assay": "rna_seq",
+    "genome": "hg38",
+    "fastq_1": "S001_R1.fastq",
+    "fastq_2": "S001_R2.fastq",
+    "tissue": "blood",
+    "collection_date": "2024-01-10"
+  },
+  {
+    "sample_id": "S-002",
+    "patient_id": "P-02",
+    "assay": "RNAseq",
+    "genome": "hg19",
+    "fastq_1": "S002_R1.fastq",
+    "fastq_2": null,
+    "tissue": "",
+    "collection_date": null
+  },
+  {
+    "sample_id": "S-003",
+    "patient_id": "P-03",
+    "assay": "atacseq",
+    "genome": "GRCh38",
+    "fastq_1": null,
+    "fastq_2": null,
+    "tissue": "tumor",
+    "collection_date": "2023-11-02"
+  }
+]

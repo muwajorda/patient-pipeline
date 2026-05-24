@@ -1,0 +1,6 @@
+work/
+.nextflow*
+*.log
+__pycache__/
+.DS_Store
+results/
