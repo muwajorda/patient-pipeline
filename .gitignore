@@ -4,3 +4,10 @@ work/
 __pycache__/
 .DS_Store
 results/
+.nextflow*
+work/
+*.bam
+*.fastq
+*.fq
+.DS_Store
+nano
