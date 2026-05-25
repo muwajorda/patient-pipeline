@@ -1,0 +1,2 @@
+sample_id,patient_id,assay,genome,fastq_1,fastq_2,tissue,quality_score
+S-TEST,P-0,RNA-seq,GRCh38,test_R1.fastq,test_R2.fastq,blood,100

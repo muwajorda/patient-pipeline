@@ -1,76 +1,38 @@
 nextflow.enable.dsl=2
 
-params.outdir = "/Users/jordanamuwanguzi/Desktop/patient_Pipeline/results"
+include { QC_CHECK } from './modules/qc/main.nf'
+include { ALIGN_READS } from './modules/alignment/main.nf'
+include { GENERATE_COUNTS } from './modules/counts/main.nf'
 
-
-params.manifest = "/Users/jordanamuwanguzi/Desktop/patient_Pipeline/data/validated_manifest.csv"
-
-
-process QC_CHECK {
-
-    publishDir "${params.outdir}/qc", mode: 'copy'
-
-    input:
-    val row
-
-    output:
-    tuple val(row), path("${row.sample_id}_qc.txt")
-
-    script:
-    """
-    echo "QC PASSED" > ${row.sample_id}_qc.txt
-    echo "Sample: ${row.sample_id}" >> ${row.sample_id}_qc.txt
-    echo "Assay: ${row.assay}" >> ${row.sample_id}_qc.txt
-    """
-}
-
-
-process ALIGN_READS {
-
-    publishDir "${params.outdir}/alignment", mode: 'copy'
-
-    input:
-    tuple val(row), path(qc_file)
-
-    output:
-    tuple val(row), path("${row.sample_id}.bam")
-
-    script:
-    """
-    echo "Simulated BAM file" > ${row.sample_id}.bam
-    echo "Aligned to ${row.genome}" >> ${row.sample_id}.bam
-    """
-}
-
-
-process GENERATE_COUNTS {
-
-    publishDir "${params.outdir}/counts", mode: 'copy'
-
-    input:
-    tuple val(row), path(bam)
-
-    output:
-    path("${row.sample_id}_counts.txt")
-
-    script:
-    """
-    echo "GeneA 120" > ${row.sample_id}_counts.txt
-    echo "GeneB 88" >> ${row.sample_id}_counts.txt
-    echo "GeneC 201" >> ${row.sample_id}_counts.txt
-    """
-}
-
+params.test = false
 
 workflow {
 
-    samples_ch = Channel
-        .fromPath(params.manifest)
-        .splitCsv(header: true)
+    def manifest = params.test ?
+        "test_data/test_manifest.csv" :
+        "data/validated_manifest.csv"
 
+    samples_ch = Channel
+        .fromPath(manifest)
+        .splitCsv(header: true)
+        .map { row ->
+
+            def fq1 = file(row.fastq_1)
+
+            // ✅ NO NULLS — use list instead
+            def reads = row.fastq_2?.trim() ?
+                [fq1, file(row.fastq_2)] :
+                [fq1]
+
+            tuple(row.sample_id, reads)
+        }
+
+    // QC branch
     qc_results = QC_CHECK(samples_ch)
 
-    aligned = ALIGN_READS(qc_results)
+    // Alignment branch (reuse same channel safely)
+    bam_results = ALIGN_READS(samples_ch)
 
-    GENERATE_COUNTS(aligned)
+    // Counts
+    counts_results = GENERATE_COUNTS(bam_results)
 }

@@ -1,0 +1,28 @@
+name: Nextflow CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Java
+        run: sudo apt-get update && sudo apt-get install -y openjdk-11-jre
+
+      - name: Install Nextflow
+        run: curl -s https://get.nextflow.io | bash && sudo mv nextflow /usr/local/bin/
+
+      - name: Check Nextflow version
+        run: nextflow -version
+
+      - name: Run pipeline test
+        run: |
+          nextflow run nextflow/main.nf \
+            -with-docker patient-pipeline:latest \
+            -ansi-log false
